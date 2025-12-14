@@ -108,6 +108,93 @@ function getLearnerData(course, ag, submissions) {
 }
 return learners
 
+function getLearnerData(course, ag, submissions) {
+  // here, we would process this data to achieve the desired result.
+  // store learners here
+  const learners = {};
+  // map assignments by id
+  const assignmentMap = {};
+  //declares a variable
+  let today = new Date();
+  // loop through assignments first
+  for (let i = 0; i < ag.assignments.length; i++) {
+    let assignment = ag.assignments[i];
+    assignmentMap[assignment.id] = assignment;
+    let dueDate = new Date(assignment.due_at);
+    if (dueDate < today) {
+      console.log("Assignment " + i + " is already due");
+    } else {
+      console.log("Assignment " + i + " is not due yet");
+    }
+  }
+  // loop through submissions
+  for (let i = 0; i < submissions.length; i++) {
+    let sub = submissions[i];
+    let learnerId = sub.learner_id;
+    let assignment = assignmentMap[sub.assignment_id];
+    // not sure if this can happen but just in case
+    if (!assignment) {
+      console.log("Assignment not found for submission");
+      continue;
+    }
+  }
+    //return learners;
+
+   let dueDate = new Date(assignment.due_at);
+      let submittedDate = new Date(sub.submission.submitted_at);
+
+      let score = sub.submission.score;
+
+      // check late submission
+      if (submittedDate > dueDate) {
+        console.log("Late submission for learner:", learnerId);
+
+        let latePenalty = assignment.points_possible;
+        score = score - latePenalty;
+
+        console.log("Score after late penalty:", score); 
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    return result;
+}
+
+  const result = getLearnerData(
+    CourseInfo,
+    AssignmentGroup,
+    LearnerSubmissions
+  );
+
+  console.log(result);
+
+
+
+
+
+
+
+
+
+
    // return result;
 }
 
