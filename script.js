@@ -184,19 +184,25 @@ Call the function to get the data and print the result.
     for (let lKey in learners) {
       let l = learners[lKey];
       console.log("Processing learner " + l.id);
-    }
+    
 
-      /* let avg = 0;//
+    let avg = 0;
 
       if (l.totalPossible > 0) {
         avg = l.totalScore / l.totalPossible;
       } else {
         avg = 0;
         console.log("Learner " + l.id + " has no assignments!");
-      }//
-     */
+      }
+      console.log("Average for learner", l.id, avg);
+
+    }
+    
      return result;
+     getLearnerData(CourseInfo, AssignmentGroup, LearnerSubmissions);
+
 }
+
 const result = getLearnerData(CourseInfo, AssignmentGroup, LearnerSubmissions);
   console.log(result);
 
