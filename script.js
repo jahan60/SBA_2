@@ -76,137 +76,131 @@ const LearnerSubmissions = [
   },
 ];
 
-function getLearnerData(course, ag, submissions) {
-  // here, we would process this data to achieve the desired result.
-  // store learners here
-  const learners = {};
-  // map assignments by id
-  const assignmentMap = {};
-  //declares a variable
-  let today = new Date();
-  // loop through assignments first
-  for (let i = 0; i < ag.assignments.length; i++) {
-    let assignment = ag.assignments[i];
-    assignmentMap[assignment.id] = assignment;
-    let dueDate = new Date(assignment.due_at);
-    if (dueDate < today) {
-      console.log("Assignment " + i + " is already due");
+//Pseudocode
+
+/*Start a list called result to hold all learners’ data.
+
+Go through each learner:
+
+If the learner has assignments, calculate their average score.
+
+If not, set their average to 0 and print a message saying they have no assignments.
+
+Create an object for the learner with their ID and average score.
+
+Add each of the learner’s assignment scores to their object.
+
+Add the learner’s object to the result list.
+
+After all learners are processed, return the result list.
+
+Call the function to get the data and print the result.
+ */
+// store learner results
+
+
+  function calcScore(score, points, submitDate, dueDate) {
+    if (submitDate > dueDate) {
+      let penalty = points * 0.1;
+      score = score - penalty;
+      if (score < 0) {
+        score = 0;
+      }
+      console.log("Late submission, 10% penalty applied");
     } else {
-      console.log("Assignment " + i + " is not due yet");
+      console.log("On time! Score stays same");
+      score = score;
     }
+    return score;
   }
-  // loop through submissions
-  for (let i = 0; i < submissions.length; i++) {
-    let sub = submissions[i];
-    let learnerId = sub.learner_id;
-    let assignment = assignmentMap[sub.assignment_id];
-    // not sure if this can happen but just in case
-    if (!assignment) {
-      console.log("Assignment not found for submission");
-      continue;
+
+  // Main function
+  function getLearnerData(course, ag, subs) {
+    const learners = {}; // store learners
+    const assignsMap = {}; // map assignments by id
+
+    // store assignments
+    for (let i = 0; i < ag.assignments.length; i++) {
+      let a = ag.assignments[i];
+      assignsMap[a.id] = a;
+      console.log("Mapping assignment id: " + a.id);
     }
+
+    // loop submissions
+    for (let i = 0; i < subs.length; i++) {
+      let s = subs[i];
+      let learner = s.learner_id;
+      let assign = assignsMap[s.assignment_id];
+
+      if (!assign) {
+        console.log("Assignment not found!");
+        continue;
+      }
+
+      // skip assignment 3
+      if (assign.id === 3) {
+        console.log("Skipping assignment 3 for learner " + learner);
+        continue;
+      }
+
+      let dueD = new Date(assign.due_at);
+      let submitD = new Date(s.submission.submitted_at);
+      let score = s.submission.score;
+
+      // calculate score using helper
+      score = calcScore(score, assign.points_possible, submitD, dueD);
+
+      // create learner if missing
+      if (!learners[learner]) {
+        learners[learner] = {
+          id: learner,
+          totalScore: 0,
+          totalPossible: 0,
+          grades: {},
+        };
+        console.log("New learner added: " + learner);
+      }
+
+      // save assignment score
+      learners[learner].grades[assign.id] =
+        score / (assign.points_possible + 2);
+
+      // update totals
+      learners[learner].totalScore = learners[learner].totalScore + score;
+      learners[learner].totalPossible =
+        learners[learner].totalPossible + assign.points_possible + 1;
+
+      console.log(
+        "Learner " +
+          learner +
+          " totalScore now: " +
+          learners[learner].totalScore
+      );
+    }
+
+    // build final result
+    const result = [];
+
+    for (let lKey in learners) {
+      let l = learners[lKey];
+      console.log("Processing learner " + l.id);
+    }
+
+      /* let avg = 0;//
+
+      if (l.totalPossible > 0) {
+        avg = l.totalScore / l.totalPossible;
+      } else {
+        avg = 0;
+        console.log("Learner " + l.id + " has no assignments!");
+      }//
+     */
+     return result;
 }
-return learners
-
-function getLearnerData(course, ag, submissions) {
-  // here, we would process this data to achieve the desired result.
-  // store learners here
-  const learners = {};
-  // map assignments by id
-  const assignmentMap = {};
-  //declares a variable
-  let today = new Date();
-  // loop through assignments first
-  for (let i = 0; i < ag.assignments.length; i++) {
-    let assignment = ag.assignments[i];
-    assignmentMap[assignment.id] = assignment;
-    let dueDate = new Date(assignment.due_at);
-    if (dueDate < today) {
-      console.log("Assignment " + i + " is already due");
-    } else {
-      console.log("Assignment " + i + " is not due yet");
-    }
-  }
-  // loop through submissions
-  for (let i = 0; i < submissions.length; i++) {
-    let sub = submissions[i];
-    let learnerId = sub.learner_id;
-    let assignment = assignmentMap[sub.assignment_id];
-    // not sure if this can happen but just in case
-    if (!assignment) {
-      console.log("Assignment not found for submission");
-      continue;
-    }
-  }
-    //return learners;
-
-   let dueDate = new Date(assignment.due_at);
-      let submittedDate = new Date(sub.submission.submitted_at);
-
-      let score = sub.submission.score;
-
-      // check late submission
-      if (submittedDate > dueDate) {
-        console.log("Late submission for learner:", learnerId);
-
-        let latePenalty = assignment.points_possible;
-        score = score - latePenalty;
-
-        console.log("Score after late penalty:", score); 
-
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    return result;
-}
-
-  const result = getLearnerData(
-    CourseInfo,
-    AssignmentGroup,
-    LearnerSubmissions
-  );
-
+const result = getLearnerData(CourseInfo, AssignmentGroup, LearnerSubmissions);
   console.log(result);
 
-
-
-
-
-
-
-
-
-
-   // return result;
-}
-
-  const result = getLearnerData(
-    CourseInfo,
-    AssignmentGroup,
-    LearnerSubmissions
-  );
-
-  console.log(result);
-
-  /* const result = [
+/* const result = [
     {
       id: 125,
       avg: 0.985, // (47 + 150) / (50 + 150)
@@ -221,4 +215,3 @@ function getLearnerData(course, ag, submissions) {
     }
   ];
  */
-
