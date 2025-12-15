@@ -97,7 +97,6 @@ After all learners are processed, return the result list.
 Call the function to get the data and print the result.
  */
 // store learner results
-
 try {
   function calcScore(score, points, submitDate, dueDate) {
     if (submitDate > dueDate) {
@@ -109,7 +108,6 @@ try {
       console.log("Late submission, 10% penalty applied");
     } else {
       console.log("On time! Score stays same");
-      score = score;
     }
     return score;
   }
@@ -166,9 +164,8 @@ try {
         score / (assign.points_possible + 2);
 
       // update totals
-      learners[learner].totalScore = learners[learner].totalScore + score;
-      learners[learner].totalPossible =
-        learners[learner].totalPossible + assign.points_possible + 1;
+      learners[learner].totalScore += score;
+      learners[learner].totalPossible += assign.points_possible + 1;
 
       console.log(
         "Learner " +
@@ -184,32 +181,44 @@ try {
     for (let lKey in learners) {
       let l = learners[lKey];
       console.log("Processing learner " + l.id);
-    
 
-    let avg = 0;
+      let avg = 0;
 
       if (l.totalPossible > 0) {
         avg = l.totalScore / l.totalPossible;
       } else {
-        avg = 0;
         console.log("Learner " + l.id + " has no assignments!");
       }
-      console.log("Average for learner", l.id, avg);
 
+      let learnerObj = {
+        id: l.id,
+        avg: avg,
+      };
+
+      // add each assignment score
+      for (let aid in l.grades) {
+        learnerObj[aid] = l.grades[aid];
+      }
+
+      result.push(learnerObj);
     }
-    
-     return result;
-     getLearnerData(CourseInfo, AssignmentGroup, LearnerSubmissions);
 
-}
+    return result;
+  }
 
-const result = getLearnerData(CourseInfo, AssignmentGroup, LearnerSubmissions);
+  // call main function
+  const result = getLearnerData(
+    CourseInfo,
+    AssignmentGroup,
+    LearnerSubmissions
+  );
   console.log(result);
 
 } catch (err) {
   console.log(err);
-
 }
+
+
 /* const result = [
     {
       id: 125,
