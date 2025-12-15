@@ -98,7 +98,7 @@ Call the function to get the data and print the result.
  */
 // store learner results
 
-
+try {
   function calcScore(score, points, submitDate, dueDate) {
     if (submitDate > dueDate) {
       let penalty = points * 0.1;
@@ -206,6 +206,10 @@ Call the function to get the data and print the result.
 const result = getLearnerData(CourseInfo, AssignmentGroup, LearnerSubmissions);
   console.log(result);
 
+} catch (err) {
+  console.log(err);
+
+}
 /* const result = [
     {
       id: 125,
